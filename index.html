@@ -3,151 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokemon Data Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>NEXUS AI | The Sovereign of Social Commerce</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        button {
-            background-color: #4472C4;
-            color: white;
-            padding: 15px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #365a9e;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #4472C4;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap');
+        
+        :root { --accent: #3b82f6; --bg: #000; }
+        body { background: var(--bg); color: white; font-family: 'Plus Jakarta Sans', sans-serif; cursor: none; overflow-x: hidden; }
+        
+        /* Custom Cursor */
+        #cursor { width: 20px; height: 20px; background: white; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s ease; }
+        #cursor-blur { width: 400px; height: 400px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%); position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(50px); }
+
+        /* Typography & Effects */
+        .title-font { font-family: 'Space Grotesk', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gradient-border { border: 1px solid; border-image: linear-gradient(to right, #3b82f6, #8b5cf6) 1; }
+        .text-gradient { background: linear-gradient(180deg, #fff 0%, #666 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* High-End Animations */
+        .reveal { opacity: 0; transform: translateY(30px); }
+        .bento-card:hover { transform: translateY(-10px); transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1); }
+        
+        /* Preloader */
+        #preloader { position: fixed; inset: 0; background: black; z-index: 10000; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk'; font-size: 2rem; }
     </style>
 </head>
 <body>
-    <h1>Pokemon Data Generator</h1>
-    <button onclick="generateAndDownload()">Generate Pokemon Data & Download Excel</button>
-    <button onclick="generateAndDisplay()">Generate & Display Only</button>
-    
-    <div id="output"></div>
 
+    <div id="preloader">NEXUS AI.</div>
+    <div id="cursor"></div>
+    <div id="cursor-blur"></div>
+
+    <nav class="fixed w-full z-[100] px-10 py-8 flex justify-between items-center transition-all duration-500" id="navbar">
+        <div class="title-font font-bold text-2xl tracking-tighter">NX.</div>
+        <div class="hidden lg:flex gap-12 text-[11px] uppercase tracking-[0.3em] font-medium text-gray-400">
+            <a href="#features" class="hover:text-white transition cursor-none">Technology</a>
+            <a href="#inventory" class="hover:text-white transition cursor-none">Warehouse</a>
+            <a href="#pricing" class="hover:text-white transition cursor-none">Pricing</a>
+            <a href="#faq" class="hover:text-white transition cursor-none">Intelligence</a>
+        </div>
+        <button class="px-8 py-3 bg-white text-black rounded-full text-xs font-bold hover:scale-105 transition">ENTER ECOSYSTEM</button>
+    </nav>
+
+    <section class="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover opacity-30 scale-110" id="hero-img" alt="Background">
+        </div>
+        <div class="relative z-10 text-center px-6">
+            <p class="text-blue-500 font-bold tracking-[0.5em] text-xs mb-6 reveal">BEYOND ARTIFICIAL INTELLIGENCE</p>
+            <h1 class="text-7xl md:text-[160px] leading-[0.85] font-extrabold title-font text-gradient mb-10 reveal">
+                UNLIMITED <br> SCALE.
+            </h1>
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center reveal">
+                <button class="bg-blue-600 px-12 py-6 rounded-2xl font-black text-xl hover:bg-blue-500 transition shadow-[0_0_50px_-12px_rgba(59,130,246,0.5)]">Book the Keynote</button>
+                <div class="flex items-center gap-4 text-gray-400 text-sm">
+                    <div class="flex -space-x-3">
+                        <img src="https://i.pravatar.cc/100?u=1" class="w-10 h-10 rounded-full border-2 border-black">
+                        <img src="https://i.pravatar.cc/100?u=2" class="w-10 h-10 rounded-full border-2 border-black">
+                        <img src="https://i.pravatar.cc/100?u=3" class="w-10 h-10 rounded-full border-2 border-black">
+                    </div>
+                    <span>Trusted by the world's 1%</span>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-10 text-[10px] text-gray-500 tracking-widest vertical-rl reveal">
+            SCROLL TO EXPLORE
+        </div>
+    </section>
+
+    <section id="features" class="py-32 px-10 max-w-[1400px] mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-12 grid-rows-2 gap-6 h-auto md:h-[800px]">
+            <div class="md:col-span-8 glass p-12 rounded-[40px] relative overflow-hidden bento-card flex flex-col justify-end group">
+                <img src="https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&q=80&w=1000" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition duration-700" alt="">
+                <div class="relative z-10">
+                    <h3 class="text-4xl font-bold mb-4">Omni-Channel Mastery</h3>
+                    <p class="text-gray-400 max-w-md">Nexus synchronizes your DMs across Instagram, TikTok, and WhatsApp into a single neural sales brain.</p>
+                </div>
+            </div>
+            <div class="md:col-span-4 bg-blue-600 p-12 rounded-[40px] bento-card flex flex-col justify-center">
+                <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="zap" class="text-white w-8 h-8"></i></div>
+                <h3 class="text-2xl font-bold mb-2">0.01ms</h3>
+                <p class="text-blue-100 text-sm opacity-80">Instantaneous processing of complex buyer objections.</p>
+            </div>
+            <div class="md:col-span-4 glass p-12 rounded-[40px] bento-card">
+                <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-6"><i data-lucide="shield" class="text-blue-400"></i></div>
+                <h3 class="text-xl font-bold mb-4">Bank-Level Security</h3>
+                <p class="text-gray-500 text-sm">Every transaction is end-to-end encrypted and Shopify-ready.</p>
+            </div>
+            <div class="md:col-span-8 glass p-12 rounded-[40px] bento-card relative flex items-center overflow-hidden">
+                <div class="flex-1">
+                    <h3 class="text-4xl font-bold mb-4">Inventory Vision</h3>
+                    <p class="text-gray-400">Automated stock tracking that halts sales when stock is low, preventing overselling.</p>
+                </div>
+                <div class="hidden md:block w-1/3 h-full bg-gradient-to-l from-blue-500/20 to-transparent"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-10 bg-white text-black rounded-[60px] mx-4">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+            <div>
+                <h2 class="text-6xl font-black title-font leading-[0.9] mb-8 italic">HUMANS SLEEP. <br> NEXUS DOESN'T.</h2>
+                <p class="text-xl text-gray-600 mb-12">Traditional sales reps capture 14% of social leads. Nexus AI captures 98.4% by removing human friction, wait times, and emotion.</p>
+                <ul class="space-y-6">
+                    <li class="flex items-center gap-4 font-bold border-b border-gray-200 pb-4">
+                        <span class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-xs">01</span>
+                        Global Language Support (50+ Tongues)
+                    </li>
+                    <li class="flex items-center gap-4 font-bold border-b border-gray-200 pb-4">
+                        <span class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-xs">02</span>
+                        Real-time Product Upselling
+                    </li>
+                    <li class="flex items-center gap-4 font-bold">
+                        <span class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-xs">03</span>
+                        Deep CRM Integration (Salesforce/Hubspot)
+                    </li>
+                </ul>
+            </div>
+            <div class="relative h-[500px] bg-gray-100 rounded-[40px] overflow-hidden flex items-center justify-center">
+                <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=1000" class="absolute inset-0 w-full h-full object-cover grayscale opacity-20" alt="Robot Arm">
+                <div class="relative z-10 text-center">
+                    <div class="text-[120px] font-black leading-none">9x</div>
+                    <div class="text-sm tracking-widest font-bold">REVENUE MULTIPLIER</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-40 px-10">
+        <div class="text-center mb-24">
+            <h2 class="text-5xl font-bold mb-4">Choose Your Caliber</h2>
+            <p class="text-gray-500">From emerging boutiques to global conglomerates.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div class="glass p-10 rounded-[40px] border-none hover:bg-white/5 transition">
+                <p class="text-gray-500 uppercase text-xs tracking-widest mb-8">Base</p>
+                <h4 class="text-4xl font-bold mb-4">$499<span class="text-sm font-normal text-gray-500">/mo</span></h4>
+                <p class="text-sm text-gray-400 mb-10">Perfect for creators making $10k-$50k/mo.</p>
+                <div class="space-y-4 mb-10">
+                    <div class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="check" class="w-4 h-4 text-blue-500"></i> IG & WhatsApp Auto</div>
+                    <div class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="check" class="w-4 h-4 text-blue-500"></i> Inventory Sync</div>
+                </div>
+                <button class="w-full py-4 glass rounded-2xl hover:bg-white hover:text-black transition">Get Started</button>
+            </div>
+            <div class="bg-white p-10 rounded-[40px] text-black relative scale-105 shadow-2xl">
+                <div class="absolute top-6 right-10 bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-bold">MOST POPULAR</div>
+                <p class="text-gray-500 uppercase text-xs tracking-widest mb-8">Professional</p>
+                <h4 class="text-4xl font-bold mb-4">$1,299<span class="text-sm font-normal text-gray-500">/mo</span></h4>
+                <p class="text-sm text-gray-600 mb-10">For brands scaling past $100k/mo.</p>
+                <div class="space-y-4 mb-10">
+                    <div class="flex items-center gap-3 text-sm font-bold"><i data-lucide="check" class="w-4 h-4 text-blue-600"></i> Unlimited Channels</div>
+                    <div class="flex items-center gap-3 text-sm font-bold"><i data-lucide="check" class="w-4 h-4 text-blue-600"></i> Custom Brand Voice</div>
+                    <div class="flex items-center gap-3 text-sm font-bold"><i data-lucide="check" class="w-4 h-4 text-blue-600"></i> Private Account Manager</div>
+                </div>
+                <button class="w-full py-4 bg-black text-white rounded-2xl hover:opacity-80 transition">Deploy AI Now</button>
+            </div>
+            <div class="glass p-10 rounded-[40px] border-none hover:bg-white/5 transition">
+                <p class="text-gray-500 uppercase text-xs tracking-widest mb-8">Enterprise</p>
+                <h4 class="text-4xl font-bold mb-4">Custom</h4>
+                <p class="text-sm text-gray-400 mb-10">Full-scale digital takeover for public companies.</p>
+                <div class="space-y-4 mb-10">
+                    <div class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="check" class="w-4 h-4 text-blue-500"></i> Dedicated Server</div>
+                    <div class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="check" class="w-4 h-4 text-blue-500"></i> API Access</div>
+                </div>
+                <button class="w-full py-4 glass rounded-2xl hover:bg-white hover:text-black transition">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-32 px-10 max-w-4xl mx-auto">
+        <h2 class="text-4xl font-bold mb-20 text-center title-font tracking-tight">Technical Inquiry</h2>
+        <div class="space-y-4">
+            <details class="glass p-8 rounded-3xl group cursor-none">
+                <summary class="list-none flex justify-between items-center font-bold text-lg cursor-none">
+                    How does it handle complex shipping logic?
+                    <i data-lucide="chevron-down" class="group-open:rotate-180 transition"></i>
+                </summary>
+                <p class="mt-6 text-gray-400 leading-relaxed">Our neural engine integrates directly with your shipping carriers (FedEx, DHL, etc.) and calculates real-time duties, taxes, and transit times based on the user's location detected via their social profile or IP.</p>
+            </details>
+            <details class="glass p-8 rounded-3xl group cursor-none">
+                <summary class="list-none flex justify-between items-center font-bold text-lg cursor-none">
+                    Is it truly indistinguishable from a human?
+                    <i data-lucide="chevron-down" class="group-open:rotate-180 transition"></i>
+                </summary>
+                <p class="mt-6 text-gray-400 leading-relaxed">Yes. We use a proprietary "Emotional Layer" that mimics human typing delays, small corrections, and contextual slang based on the platform (e.g., more emojis on TikTok, professional on WhatsApp).</p>
+            </details>
+        </div>
+    </section>
+
+    <footer class="py-20 px-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-start gap-20">
+        <div>
+            <h2 class="title-font font-bold text-4xl mb-6">NX.</h2>
+            <p class="text-gray-500 max-w-xs mb-10 text-sm">Building the automated future of luxury commerce. Designed in California. Deployed Globally.</p>
+            <div class="flex gap-4">
+                <div class="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="instagram" class="w-4 h-4"></i></div>
+                <div class="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-blue-600 transition"><i data-lucide="twitter" class="w-4 h-4"></i></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-20">
+            <div>
+                <h5 class="text-xs font-bold uppercase tracking-widest text-white mb-6">Platform</h5>
+                <ul class="text-gray-500 text-sm space-y-4">
+                    <li><a href="#" class="hover:text-white transition">Intelligence</a></li>
+                    <li><a href="#" class="hover:text-white transition">Inventory</a></li>
+                    <li><a href="#" class="hover:text-white transition">Security</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-xs font-bold uppercase tracking-widest text-white mb-6">Company</h5>
+                <ul class="text-gray-500 text-sm space-y-4">
+                    <li><a href="#" class="hover:text-white transition">About</a></li>
+                    <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                    <li><a href="#" class="hover:text-white transition">Press</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        const pokemonNames = [
-            "Pikachu", "Charizard", "Bulbasaur", "Squirtle", "Eevee",
-            "Mewtwo", "Dragonite", "Gyarados", "Snorlax", "Gengar",
-            "Lucario", "Garchomp", "Greninja", "Blaziken", "Rayquaza",
-            "Metagross", "Salamence", "Tyranitar", "Alakazam", "Machamp"
-        ];
+        AOS.init({ duration: 1000, once: false });
+        lucide.createIcons();
 
-        const pokemonTypes = [
-            "Fire", "Water", "Grass", "Electric", "Psychic",
-            "Dark", "Dragon", "Fighting", "Flying", "Ghost",
-            "Ice", "Normal", "Poison", "Rock", "Steel"
-        ];
-
-        const locations = [
-            {city: "Tokyo, Japan", lat: 35.6762, lon: 139.6503},
-            {city: "New York, USA", lat: 40.7128, lon: -74.0060},
-            {city: "London, UK", lat: 51.5074, lon: -0.1278},
-            {city: "Paris, France", lat: 48.8566, lon: 2.3522},
-            {city: "Sydney, Australia", lat: -33.8688, lon: 151.2093},
-            {city: "Rio de Janeiro, Brazil", lat: -22.9068, lon: -43.1729},
-            {city: "Mumbai, India", lat: 19.0760, lon: 72.8777},
-            {city: "Cairo, Egypt", lat: 30.0444, lon: 31.2357},
-            {city: "Moscow, Russia", lat: 55.7558, lon: 37.6173},
-            {city: "Toronto, Canada", lat: 43.6532, lon: -79.3832}
-        ];
-
-        function getRandomElement(array) {
-            return array[Math.floor(Math.random() * array.length)];
-        }
-
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function generatePokemonData(numPokemon = 20) {
-            const data = [];
+        // 1. Preloader
+        window.onload = () => {
+            gsap.to("#preloader", { opacity: 0, duration: 1.5, onComplete: () => document.getElementById('preloader').remove() });
             
-            for (let i = 0; i < numPokemon; i++) {
-                const name = getRandomElement(pokemonNames);
-                const type = getRandomElement(pokemonTypes);
-                const level = getRandomInt(1, 100);
-                const cp = getRandomInt(100, 5000);
-                const location = getRandomElement(locations);
-                
-                const lat = (location.lat + (Math.random() * 0.2 - 0.1)).toFixed(6);
-                const lon = (location.lon + (Math.random() * 0.2 - 0.1)).toFixed(6);
-                
-                data.push({
-                    ID: i + 1,
-                    Name: name,
-                    Type: type,
-                    Level: level,
-                    CP: cp,
-                    Location: location.city,
-                    Latitude: parseFloat(lat),
-                    Longitude: parseFloat(lon)
-                });
-            }
-            
-            return data;
-        }
-
-        function generateAndDisplay() {
-            const data = generatePokemonData(20);
-            
-            let html = '<table><thead><tr>';
-            html += '<th>ID</th><th>Name</th><th>Type</th><th>Level</th><th>CP</th><th>Location</th><th>Latitude</th><th>Longitude</th>';
-            html += '</tr></thead><tbody>';
-            
-            data.forEach(pokemon => {
-                html += `<tr>
-                    <td>${pokemon.ID}</td>
-                    <td>${pokemon.Name}</td>
-                    <td>${pokemon.Type}</td>
-                    <td>${pokemon.Level}</td>
-                    <td>${pokemon.CP}</td>
-                    <td>${pokemon.Location}</td>
-                    <td>${pokemon.Latitude}</td>
-                    <td>${pokemon.Longitude}</td>
-                </tr>`;
+            // 2. Reveal Animations
+            gsap.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power4.out"
             });
-            
-            html += '</tbody></table>';
-            document.getElementById('output').innerHTML = html;
-        }
+        };
 
-        function generateAndDownload() {
-            const data = generatePokemonData(20);
-            
-            const ws = XLSX.utils.json_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Pokemon Data");
-            
-            XLSX.writeFile(wb, "pokemon_data.xlsx");
-            
-            alert("Excel file downloaded successfully!");
-        }
+        // 3. Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        const cursorBlur = document.getElementById('cursor-blur');
+
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+            gsap.to(cursorBlur, { x: e.clientX, y: e.clientY, duration: 0.5 });
+        });
+
+        // 4. Hero Parallax
+        gsap.to("#hero-img", {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            },
+            scale: 1.5,
+            y: 200
+        });
+
+        // 5. Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                nav.classList.add('glass', 'py-4');
+            } else {
+                nav.classList.remove('glass', 'py-4');
+            }
+        });
     </script>
 </body>
 </html>
