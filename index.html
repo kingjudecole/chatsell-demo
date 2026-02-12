@@ -1,122 +1,153 @@
-```python
-import random
-from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Data Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            background-color: #4472C4;
+            color: white;
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #365a9e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4472C4;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pokemon Data Generator</h1>
+    <button onclick="generateAndDownload()">Generate Pokemon Data & Download Excel</button>
+    <button onclick="generateAndDisplay()">Generate & Display Only</button>
+    
+    <div id="output"></div>
 
-# Pokemon names pool
-pokemon_names = [
-    "Pikachu", "Charizard", "Bulbasaur", "Squirtle", "Eevee",
-    "Mewtwo", "Dragonite", "Gyarados", "Snorlax", "Gengar",
-    "Lucario", "Garchomp", "Greninja", "Blaziken", "Rayquaza",
-    "Metagross", "Salamence", "Tyranitar", "Alakazam", "Machamp"
-]
+    <script>
+        const pokemonNames = [
+            "Pikachu", "Charizard", "Bulbasaur", "Squirtle", "Eevee",
+            "Mewtwo", "Dragonite", "Gyarados", "Snorlax", "Gengar",
+            "Lucario", "Garchomp", "Greninja", "Blaziken", "Rayquaza",
+            "Metagross", "Salamence", "Tyranitar", "Alakazam", "Machamp"
+        ];
 
-# Pokemon types
-pokemon_types = [
-    "Fire", "Water", "Grass", "Electric", "Psychic",
-    "Dark", "Dragon", "Fighting", "Flying", "Ghost",
-    "Ice", "Normal", "Poison", "Rock", "Steel"
-]
+        const pokemonTypes = [
+            "Fire", "Water", "Grass", "Electric", "Psychic",
+            "Dark", "Dragon", "Fighting", "Flying", "Ghost",
+            "Ice", "Normal", "Poison", "Rock", "Steel"
+        ];
 
-# Cities with approximate coordinates
-locations = [
-    {"city": "Tokyo, Japan", "lat": 35.6762, "lon": 139.6503},
-    {"city": "New York, USA", "lat": 40.7128, "lon": -74.0060},
-    {"city": "London, UK", "lat": 51.5074, "lon": -0.1278},
-    {"city": "Paris, France", "lat": 48.8566, "lon": 2.3522},
-    {"city": "Sydney, Australia", "lat": -33.8688, "lon": 151.2093},
-    {"city": "Rio de Janeiro, Brazil", "lat": -22.9068, "lon": -43.1729},
-    {"city": "Mumbai, India", "lat": 19.0760, "lon": 72.8777},
-    {"city": "Cairo, Egypt", "lat": 30.0444, "lon": 31.2357},
-    {"city": "Moscow, Russia", "lat": 55.7558, "lon": 37.6173},
-    {"city": "Toronto, Canada", "lat": 43.6532, "lon": -79.3832}
-]
+        const locations = [
+            {city: "Tokyo, Japan", lat: 35.6762, lon: 139.6503},
+            {city: "New York, USA", lat: 40.7128, lon: -74.0060},
+            {city: "London, UK", lat: 51.5074, lon: -0.1278},
+            {city: "Paris, France", lat: 48.8566, lon: 2.3522},
+            {city: "Sydney, Australia", lat: -33.8688, lon: 151.2093},
+            {city: "Rio de Janeiro, Brazil", lat: -22.9068, lon: -43.1729},
+            {city: "Mumbai, India", lat: 19.0760, lon: 72.8777},
+            {city: "Cairo, Egypt", lat: 30.0444, lon: 31.2357},
+            {city: "Moscow, Russia", lat: 55.7558, lon: 37.6173},
+            {city: "Toronto, Canada", lat: 43.6532, lon: -79.3832}
+        ];
 
-def generate_pokemon_data(num_pokemon=20):
-    """Generate random Pokemon data with locations"""
-    data = []
-    
-    for i in range(num_pokemon):
-        name = random.choice(pokemon_names)
-        pokemon_type = random.choice(pokemon_types)
-        level = random.randint(1, 100)
-        cp = random.randint(100, 5000)
-        location = random.choice(locations)
-        
-        # Add some random variation to coordinates
-        lat = location["lat"] + random.uniform(-0.1, 0.1)
-        lon = location["lon"] + random.uniform(-0.1, 0.1)
-        
-        data.append({
-            "id": i + 1,
-            "name": name,
-            "type": pokemon_type,
-            "level": level,
-            "cp": cp,
-            "location": location["city"],
-            "latitude": round(lat, 6),
-            "longitude": round(lon, 6)
-        })
-    
-    return data
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
 
-def create_excel_file(data, filename="pokemon_data.xlsx"):
-    """Create Excel file with Pokemon data"""
-    wb = Workbook()
-    sheet = wb.active
-    sheet.title = "Pokemon Data"
-    
-    # Headers
-    headers = ["ID", "Name", "Type", "Level", "CP", "Location", "Latitude", "Longitude"]
-    sheet.append(headers)
-    
-    # Style headers
-    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
-    header_font = Font(bold=True, color="FFFFFF")
-    
-    for col_num, header in enumerate(headers, 1):
-        cell = sheet.cell(row=1, column=col_num)
-        cell.fill = header_fill
-        cell.font = header_font
-        cell.alignment = Alignment(horizontal="center")
-    
-    # Add data
-    for pokemon in data:
-        sheet.append([
-            pokemon["id"],
-            pokemon["name"],
-            pokemon["type"],
-            pokemon["level"],
-            pokemon["cp"],
-            pokemon["location"],
-            pokemon["latitude"],
-            pokemon["longitude"]
-        ])
-    
-    # Format columns
-    sheet.column_dimensions['A'].width = 8
-    sheet.column_dimensions['B'].width = 15
-    sheet.column_dimensions['C'].width = 12
-    sheet.column_dimensions['D'].width = 10
-    sheet.column_dimensions['E'].width = 10
-    sheet.column_dimensions['F'].width = 25
-    sheet.column_dimensions['G'].width = 12
-    sheet.column_dimensions['H'].width = 12
-    
-    # Center align numeric columns
-    for row in range(2, len(data) + 2):
-        for col in [1, 4, 5]:
-            sheet.cell(row=row, column=col).alignment = Alignment(horizontal="center")
-    
-    # Save file
-    wb.save(filename)
-    print(f"Excel file '{filename}' created successfully with {len(data)} Pokemon!")
-    return filename
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
 
-if __name__ == "__main__":
-    # Generate 20 random Pokemon
-    pokemon_data = generate_pokemon_data(20)
-    
-    # Create Excel file
-    create_excel_file(pokemon_data, "pokemon_data.xlsx")
-```
+        function generatePokemonData(numPokemon = 20) {
+            const data = [];
+            
+            for (let i = 0; i < numPokemon; i++) {
+                const name = getRandomElement(pokemonNames);
+                const type = getRandomElement(pokemonTypes);
+                const level = getRandomInt(1, 100);
+                const cp = getRandomInt(100, 5000);
+                const location = getRandomElement(locations);
+                
+                const lat = (location.lat + (Math.random() * 0.2 - 0.1)).toFixed(6);
+                const lon = (location.lon + (Math.random() * 0.2 - 0.1)).toFixed(6);
+                
+                data.push({
+                    ID: i + 1,
+                    Name: name,
+                    Type: type,
+                    Level: level,
+                    CP: cp,
+                    Location: location.city,
+                    Latitude: parseFloat(lat),
+                    Longitude: parseFloat(lon)
+                });
+            }
+            
+            return data;
+        }
+
+        function generateAndDisplay() {
+            const data = generatePokemonData(20);
+            
+            let html = '<table><thead><tr>';
+            html += '<th>ID</th><th>Name</th><th>Type</th><th>Level</th><th>CP</th><th>Location</th><th>Latitude</th><th>Longitude</th>';
+            html += '</tr></thead><tbody>';
+            
+            data.forEach(pokemon => {
+                html += `<tr>
+                    <td>${pokemon.ID}</td>
+                    <td>${pokemon.Name}</td>
+                    <td>${pokemon.Type}</td>
+                    <td>${pokemon.Level}</td>
+                    <td>${pokemon.CP}</td>
+                    <td>${pokemon.Location}</td>
+                    <td>${pokemon.Latitude}</td>
+                    <td>${pokemon.Longitude}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            document.getElementById('output').innerHTML = html;
+        }
+
+        function generateAndDownload() {
+            const data = generatePokemonData(20);
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Pokemon Data");
+            
+            XLSX.writeFile(wb, "pokemon_data.xlsx");
+            
+            alert("Excel file downloaded successfully!");
+        }
+    </script>
+</body>
+</html>
