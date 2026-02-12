@@ -1,219 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS ELITE | The Sovereign AI sales Engine</title>
+```python
+import random
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+
+# Pokemon names pool
+pokemon_names = [
+    "Pikachu", "Charizard", "Bulbasaur", "Squirtle", "Eevee",
+    "Mewtwo", "Dragonite", "Gyarados", "Snorlax", "Gengar",
+    "Lucario", "Garchomp", "Greninja", "Blaziken", "Rayquaza",
+    "Metagross", "Salamence", "Tyranitar", "Alakazam", "Machamp"
+]
+
+# Pokemon types
+pokemon_types = [
+    "Fire", "Water", "Grass", "Electric", "Psychic",
+    "Dark", "Dragon", "Fighting", "Flying", "Ghost",
+    "Ice", "Normal", "Poison", "Rock", "Steel"
+]
+
+# Cities with approximate coordinates
+locations = [
+    {"city": "Tokyo, Japan", "lat": 35.6762, "lon": 139.6503},
+    {"city": "New York, USA", "lat": 40.7128, "lon": -74.0060},
+    {"city": "London, UK", "lat": 51.5074, "lon": -0.1278},
+    {"city": "Paris, France", "lat": 48.8566, "lon": 2.3522},
+    {"city": "Sydney, Australia", "lat": -33.8688, "lon": 151.2093},
+    {"city": "Rio de Janeiro, Brazil", "lat": -22.9068, "lon": -43.1729},
+    {"city": "Mumbai, India", "lat": 19.0760, "lon": 72.8777},
+    {"city": "Cairo, Egypt", "lat": 30.0444, "lon": 31.2357},
+    {"city": "Moscow, Russia", "lat": 55.7558, "lon": 37.6173},
+    {"city": "Toronto, Canada", "lat": 43.6532, "lon": -79.3832}
+]
+
+def generate_pokemon_data(num_pokemon=20):
+    """Generate random Pokemon data with locations"""
+    data = []
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Syncopate:wght@400;700&display=swap');
+    for i in range(num_pokemon):
+        name = random.choice(pokemon_names)
+        pokemon_type = random.choice(pokemon_types)
+        level = random.randint(1, 100)
+        cp = random.randint(100, 5000)
+        location = random.choice(locations)
         
-        :root { 
-            --blue: #0071ff; 
-            --emerald: #10b981; 
-            --violet: #8b5cf6;
-            --bg: #030303; 
-        }
+        # Add some random variation to coordinates
+        lat = location["lat"] + random.uniform(-0.1, 0.1)
+        lon = location["lon"] + random.uniform(-0.1, 0.1)
         
-        body { background: var(--bg); color: white; font-family: 'Space Grotesk', sans-serif; cursor: none; overflow-x: hidden; }
-        .header-font { font-family: 'Syncopate', sans-serif; text-transform: uppercase; letter-spacing: 0.2em; }
-        
-        /* Visibility Enhancements */
-        .glass-panel { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        
-        .text-glow { text-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
-        .gradient-emerald { background: linear-gradient(to right, #fff, var(--emerald)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gradient-violet { background: linear-gradient(to right, #fff, var(--violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        data.append({
+            "id": i + 1,
+            "name": name,
+            "type": pokemon_type,
+            "level": level,
+            "cp": cp,
+            "location": location["city"],
+            "latitude": round(lat, 6),
+            "longitude": round(lon, 6)
+        })
+    
+    return data
 
-        /* Custom Cursor */
-        .cursor-dot { width: 6px; height: 6px; background: white; border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000; }
-        .cursor-outline { width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.15s; }
+def create_excel_file(data, filename="pokemon_data.xlsx"):
+    """Create Excel file with Pokemon data"""
+    wb = Workbook()
+    sheet = wb.active
+    sheet.title = "Pokemon Data"
+    
+    # Headers
+    headers = ["ID", "Name", "Type", "Level", "CP", "Location", "Latitude", "Longitude"]
+    sheet.append(headers)
+    
+    # Style headers
+    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    
+    for col_num, header in enumerate(headers, 1):
+        cell = sheet.cell(row=1, column=col_num)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+    
+    # Add data
+    for pokemon in data:
+        sheet.append([
+            pokemon["id"],
+            pokemon["name"],
+            pokemon["type"],
+            pokemon["level"],
+            pokemon["cp"],
+            pokemon["location"],
+            pokemon["latitude"],
+            pokemon["longitude"]
+        ])
+    
+    # Format columns
+    sheet.column_dimensions['A'].width = 8
+    sheet.column_dimensions['B'].width = 15
+    sheet.column_dimensions['C'].width = 12
+    sheet.column_dimensions['D'].width = 10
+    sheet.column_dimensions['E'].width = 10
+    sheet.column_dimensions['F'].width = 25
+    sheet.column_dimensions['G'].width = 12
+    sheet.column_dimensions['H'].width = 12
+    
+    # Center align numeric columns
+    for row in range(2, len(data) + 2):
+        for col in [1, 4, 5]:
+            sheet.cell(row=row, column=col).alignment = Alignment(horizontal="center")
+    
+    # Save file
+    wb.save(filename)
+    print(f"Excel file '{filename}' created successfully with {len(data)} Pokemon!")
+    return filename
 
-        /* Floating Background Assets */
-        .blob { position: absolute; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.2; animation: float 20s infinite alternate; }
-        @keyframes float { from { transform: translate(0,0); } to { transform: translate(100px, 50px); } }
-    </style>
-</head>
-<body>
-
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-
-    <div class="blob w-96 h-96 bg-emerald-600 top-20 left-10"></div>
-    <div class="blob w-[500px] h-[500px] bg-violet-600 bottom-40 right-10" style="animation-delay: -5s;"></div>
-
-    <nav class="fixed top-0 w-full z-[100] px-10 py-8 flex justify-between items-center glass-panel !bg-transparent border-none">
-        <div class="header-font font-bold text-xl tracking-tighter">NEXUS<span class="text-emerald-500">.</span></div>
-        <div class="hidden lg:flex gap-10 text-[10px] header-font font-bold opacity-60">
-            <a href="#intel" class="hover:text-emerald-400 hover:opacity-100 transition">Intelligence</a>
-            <a href="#demo" class="hover:text-violet-400 hover:opacity-100 transition">Mini Demo</a>
-            <a href="#warehouse" class="hover:text-blue-400 hover:opacity-100 transition">Warehouse</a>
-            <a href="#pricing" class="hover:text-white hover:opacity-100 transition">Ecosystem</a>
-        </div>
-        <div class="flex gap-4">
-            <a href="https://github.com/kingjudecole" target="_blank" class="w-10 h-10 glass-panel rounded-full flex items-center justify-center hover:bg-white hover:text-black transition">
-                <i data-lucide="github" class="w-4 h-4"></i>
-            </a>
-            <button class="px-8 py-3 bg-white text-black rounded-full text-[10px] header-font font-bold hover:scale-110 transition">Connect</button>
-        </div>
-    </nav>
-
-    <section class="min-h-screen pt-32 px-10 grid lg:grid-cols-2 gap-20 items-center">
-        <div class="reveal">
-            <div class="inline-flex items-center gap-2 glass-panel px-4 py-2 rounded-full text-[10px] header-font text-emerald-400 mb-8">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> v4.0 Sovereign Engine
-            </div>
-            <h1 class="text-6xl md:text-8xl font-black leading-none mb-8 text-glow">
-                AI THAT <br> <span class="gradient-emerald">CLOSES.</span>
-            </h1>
-            <p class="text-gray-400 text-lg max-w-lg mb-12 leading-relaxed">
-                The world's first multi-model sales brain. Seamlessly integrated into Instagram, WhatsApp, and TikTok to manage inventory and revenue at $10M+ scale.
-            </p>
-            <div class="flex gap-6">
-                <button class="px-10 py-5 bg-emerald-600 rounded-2xl font-bold hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition">Deploy Now</button>
-                <button class="px-10 py-5 glass-panel rounded-2xl font-bold">Read Whitepaper</button>
-            </div>
-        </div>
-
-        <div id="demo" class="glass-panel rounded-[40px] p-1 border-white/20 reveal" style="transition-delay: 0.3s">
-            <div class="bg-black rounded-[38px] p-8 h-[500px] flex flex-col">
-                <div class="flex justify-between items-center pb-6 border-b border-white/10 mb-6">
-                    <div class="flex gap-2">
-                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                    </div>
-                    <span class="header-font text-[9px] text-gray-500">Nexus_Neural_Stream</span>
-                </div>
-                <div class="flex-1 space-y-6 overflow-y-auto pr-2 custom-scrollbar">
-                    <div class="flex justify-start"><div class="glass-panel px-5 py-3 rounded-3xl rounded-bl-none text-sm max-w-[80%] border-emerald-500/20">Client: Is the Emerald Watch still in stock?</div></div>
-                    <div class="flex justify-end"><div class="bg-emerald-600 px-5 py-3 rounded-3xl rounded-br-none text-sm max-w-[80%]">Nexus: Checking Warehouse... 📦 Yes! 14 units left. Would you like a 10% discount link for TikTok?</div></div>
-                    <div class="flex justify-start"><div class="glass-panel px-5 py-3 rounded-3xl rounded-bl-none text-sm max-w-[80%] border-emerald-500/20">Client: Yes please, shipping to UK.</div></div>
-                    <div class="flex justify-end"><div class="bg-emerald-600 px-5 py-3 rounded-3xl rounded-br-none text-sm max-w-[80%] italic">AI is generating checkout...</div></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="intel" class="py-40 px-10 max-w-7xl mx-auto">
-        <h2 class="header-font text-3xl mb-20 text-center"><span class="gradient-violet">Neural Intelligence</span> Features</h2>
-        <div class="grid grid-cols-12 gap-6">
-            <div class="col-span-12 md:col-span-7 glass-panel rounded-[40px] p-12 h-[450px] relative overflow-hidden group">
-                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition duration-1000">
-                <div class="relative z-10">
-                    <h3 class="text-4xl font-bold mb-4">Sentiment Analysis</h3>
-                    <p class="text-gray-400 max-w-xs">Detects frustration or excitement in DMs and adjusts sales tone instantly.</p>
-                </div>
-            </div>
-            <div class="col-span-12 md:col-span-5 bg-violet-600 rounded-[40px] p-12 h-[450px] flex flex-col justify-center">
-                <i data-lucide="layers" class="w-12 h-12 mb-6 text-white"></i>
-                <h3 class="text-3xl font-bold mb-4">Cross-Platform Sync</h3>
-                <p class="text-violet-200">One brain managing Instagram, TikTok, and WhatsApp simultaneously.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="warehouse" class="py-40 bg-[#060606] relative">
-        <div class="max-w-7xl mx-auto px-10">
-            <div class="text-center mb-20">
-                <h2 class="text-6xl font-black header-font mb-4">Warehouse <span class="text-emerald-500">OS</span></h2>
-                <p class="text-gray-500">Real-time inventory tracking with zero human input.</p>
-            </div>
-            <div class="glass-panel rounded-[50px] overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-white/5 border-b border-white/10">
-                        <tr>
-                            <th class="p-8 header-font text-[10px] text-gray-400">Model SKU</th>
-                            <th class="p-8 header-font text-[10px] text-gray-400">Stock Status</th>
-                            <th class="p-8 header-font text-[10px] text-gray-400">AI Performance</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5">
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="p-8 font-bold">Phantom_Emerald_V4</td>
-                            <td class="p-8"><span class="px-4 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-xs font-bold">Operational (142)</span></td>
-                            <td class="p-8 text-gray-400">92% Conversion Rate</td>
-                        </tr>
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="p-8 font-bold">Cyber_Violet_Case</td>
-                            <td class="p-8"><span class="px-4 py-1 bg-red-500/10 text-red-500 rounded-full text-xs font-bold">Low Stock (3)</span></td>
-                            <td class="p-8 text-gray-400">AI generating scarcity triggers...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <section id="pricing" class="py-40 px-10">
-        <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-10">
-            <div class="glass-panel p-12 rounded-[50px] border-emerald-500/30">
-                <h4 class="header-font text-xs text-emerald-500 mb-6">Growth Node</h4>
-                <div class="text-5xl font-black mb-10">$1,999<span class="text-sm font-normal text-gray-500">/mo</span></div>
-                <button class="w-full py-5 bg-emerald-600 rounded-2xl font-bold">Deploy Growth</button>
-            </div>
-            <div class="glass-panel p-12 rounded-[50px] border-violet-500/30 relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-violet-600 px-6 py-2 header-font text-[8px]">Popular</div>
-                <h4 class="header-font text-xs text-violet-500 mb-6">Sovereign Node</h4>
-                <div class="text-5xl font-black mb-10">$4,500<span class="text-sm font-normal text-gray-500">/mo</span></div>
-                <button class="w-full py-5 bg-violet-600 rounded-2xl font-bold">Deploy Sovereign</button>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-20 px-10 border-t border-white/5 text-center">
-        <h2 class="header-font text-4xl mb-10">NX<span class="text-emerald-500">.</span></h2>
-        <div class="flex justify-center gap-10 text-[10px] header-font text-gray-500 mb-20">
-            <a href="#" class="hover:text-white transition">Privacy</a>
-            <a href="#" class="hover:text-white transition">Terms</a>
-            <a href="#" class="hover:text-white transition">API Docs</a>
-        </div>
-        <p class="text-gray-600 text-[10px] header-font tracking-widest">Designed for the 1%. 2026 Nexus AI Systems.</p>
-    </footer>
-
-    <script>
-        lucide.createIcons();
-
-        // Custom Cursor Movement
-        const dot = document.querySelector('.cursor-dot');
-        const outline = document.querySelector('.cursor-outline');
-        
-        window.addEventListener('mousemove', (e) => {
-            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(outline, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.15 });
-        });
-
-        // Entrance Animations
-        gsap.from(".reveal", { 
-            opacity: 0, 
-            y: 50, 
-            duration: 1.2, 
-            stagger: 0.2, 
-            ease: "power4.out" 
-        });
-
-        // Scroll Reveal for Sections
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.from("section", {
-            scrollTrigger: {
-                trigger: "section",
-                start: "top bottom",
-                toggleActions: "play none none reverse"
-            },
-            opacity: 0,
-            y: 30,
-            duration: 1
-        });
-    </script>
-</body>
-</html>
+if __name__ == "__main__":
+    # Generate 20 random Pokemon
+    pokemon_data = generate_pokemon_data(20)
+    
+    # Create Excel file
+    create_excel_file(pokemon_data, "pokemon_data.xlsx")
+```
